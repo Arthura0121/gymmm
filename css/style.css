@@ -1,0 +1,495 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  --bg: #0a0c0f;
+  --bg-grain: #0d1013;
+  --panel: #14171c;
+  --panel-2: #1a1e25;
+  --line: #262b33;
+  --text: #edeff2;
+  --text-dim: #838a96;
+  --accent: #ff5a1f;      /* athlete — effort orange */
+  --accent-soft: #ff5a1f22;
+  --spectator: #2fe6c4;   /* dad — cool cyan */
+  --spectator-soft: #2fe6c422;
+  --gold: #ffc24b;
+  --danger: #ff3b5c;
+  --radius: 18px;
+  --accent-current: var(--accent);
+  --accent-current-soft: var(--accent-soft);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 800px 500px at 50% -10%, #1a1010 0%, transparent 60%),
+    repeating-linear-gradient(0deg, #ffffff03 0px, transparent 1px, transparent 3px);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.role-dad {
+  --accent-current: var(--spectator);
+  --accent-current-soft: var(--spectator-soft);
+  background-image:
+    radial-gradient(ellipse 800px 500px at 50% -10%, #0e1a1a 0%, transparent 60%),
+    repeating-linear-gradient(0deg, #ffffff03 0px, transparent 1px, transparent 3px);
+}
+
+.wrap {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 20px 18px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ---------- header ---------- */
+
+.topbar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 4px 2px;
+}
+
+.brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+.brand span { color: var(--accent-current); }
+
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+.badge.live { border-color: var(--accent-current); color: var(--accent-current); }
+
+/* ---------- dial ---------- */
+
+.dial-card {
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dial-wrap {
+  position: relative;
+  width: 232px;
+  height: 232px;
+}
+
+.dial-wrap svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+
+.dial-track { fill: none; stroke: var(--line); stroke-width: 10; }
+.dial-fill {
+  fill: none;
+  stroke: var(--accent-current);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.35s ease, stroke 0.3s ease;
+  filter: drop-shadow(0 0 8px var(--accent-current-soft));
+}
+
+.dial-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.dial-reps {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+.dial-reps small { font-family: 'Inter'; font-size: 20px; color: var(--text-dim); font-weight: 600; }
+.dial-sub { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.12em; }
+.dial-set { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-current); margin-top: 6px; }
+
+/* pip track — 24 sets */
+.pips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  padding: 0 4px;
+}
+.pip {
+  width: 12px; height: 12px;
+  border-radius: 3px;
+  background: var(--line);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.pip.done { background: var(--accent-current); }
+.pip.current {
+  background: var(--accent-current);
+  animation: pulse-pip 1.4s ease-in-out infinite;
+}
+@keyframes pulse-pip {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.85); }
+}
+
+/* ---------- stats row ---------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.stat {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+.stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ---------- break banner ---------- */
+
+.break-banner {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, var(--accent-current-soft), transparent);
+  border: 1px solid var(--accent-current);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+.break-banner.show { display: flex; }
+.break-banner .label {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim);
+}
+.break-banner .time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 26px;
+  color: var(--accent-current);
+}
+
+/* ---------- rep button (me only) ---------- */
+
+.rep-btn {
+  width: 100%;
+  padding: 26px;
+  border: none;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--accent) 0%, #d4470f 100%);
+  color: #100600;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -8px #ff5a1f66, inset 0 1px 0 #ffffff33;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.rep-btn:active { transform: scale(0.97); box-shadow: 0 4px 12px -6px #ff5a1f66; }
+.rep-btn:disabled {
+  background: var(--panel-2);
+  color: var(--text-dim);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.rep-btn.pulse { animation: rep-flash 0.25s ease; }
+@keyframes rep-flash {
+  0% { filter: brightness(1.6); }
+  100% { filter: brightness(1); }
+}
+
+/* ---------- control row ---------- */
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.btn {
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  font-family: 'Inter';
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.btn:hover { border-color: var(--accent-current); }
+.btn.ghost { color: var(--text-dim); }
+.btn.full { grid-column: 1 / -1; }
+.btn.danger-outline { border-color: var(--danger); color: var(--danger); }
+
+/* ---------- adjust panel ---------- */
+
+.adjust-card {
+  background: var(--panel);
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.adjust-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.adjust-row {
+  display: flex;
+  gap: 8px;
+}
+.chip {
+  flex: 1;
+  padding: 10px 4px;
+  text-align: center;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text);
+}
+.chip:hover { border-color: var(--text-dim); }
+.chip.remove { color: var(--danger); }
+.chip.add { color: var(--accent-current); }
+
+/* ---------- lock screen (me only) ---------- */
+
+.lock-overlay {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 22px;
+  z-index: 50;
+}
+.lock-overlay .brand { font-size: 34px; }
+.lock-dots {
+  display: flex; gap: 12px;
+}
+.lock-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1px solid var(--line);
+  background: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.lock-dot.filled { background: var(--accent); border-color: var(--accent); }
+.lock-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 64px);
+  gap: 12px;
+}
+.lock-key {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  cursor: pointer;
+}
+.lock-key:active { background: var(--panel-2); }
+.lock-error { color: var(--danger); font-size: 13px; height: 16px; }
+
+/* ---------- complete state ---------- */
+
+.complete-banner {
+  display: none;
+  text-align: center;
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid var(--gold);
+  background: linear-gradient(90deg, #ffc24b22, transparent);
+}
+.complete-banner.show { display: block; }
+.complete-banner .title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: var(--gold);
+  letter-spacing: 0.03em;
+}
+.complete-banner .sub { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+
+/* ---------- idle start ---------- */
+
+.start-card {
+  text-align: center;
+  padding: 8px 4px 4px;
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+footer.foot {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+@media (max-width: 380px) {
+  .dial-wrap { width: 200px; height: 200px; }
+  .dial-reps { font-size: 52px; }
+}
+
+/* ---------- settings icon + modal ---------- */
+
+.icon-btn {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text-dim);
+  font-size: 16px;
+  cursor: pointer;
+}
+.icon-btn:hover { border-color: var(--accent-current); color: var(--accent-current); }
+
+.plan-line {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.mono-big { font-family: 'JetBrains Mono', monospace; }
+
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: #000000aa;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 60;
+  padding: 20px;
+}
+.modal-card {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.03em;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.field input {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 11px 12px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+}
+.field input:focus { outline: none; border-color: var(--accent-current); }
+.modal-note {
+  font-size: 12px;
+  color: var(--danger);
+  min-height: 14px;
+}
+
+/* ---------- break card (replaces dial while resting) ---------- */
+
+.break-card {
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--accent-current);
+  border-radius: var(--radius);
+  padding: 30px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 0 32px -12px var(--accent-current-soft);
+}
+.break-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-dim);
+}
+.break-countdown {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 86px;
+  line-height: 1;
+  color: var(--accent-current);
+  font-variant-numeric: tabular-nums;
+  animation: breathe 1.6s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.75; }
+}
+.break-ring-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 260px;
+  height: 12px;
+}
+.break-ring-wrap svg { width: 100%; height: 100%; display: block; }
+.break-progress {
+  position: absolute;
+  top: 0; left: 0; height: 12px;
+  border-radius: 6px;
+  background: var(--accent-current);
+  width: 100%;
+  transition: width 0.2s linear;
+}
+.break-sub { font-size: 13px; color: var(--text-dim); }

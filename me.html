@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Workout — Athlete</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="role-me">
+
+<div id="lock" class="lock-overlay">
+  <div class="brand">GRIND<span>SET</span></div>
+  <div class="lock-dots" id="lockDots"></div>
+  <div class="lock-pad" id="lockPad"></div>
+  <div class="lock-error" id="lockError"></div>
+</div>
+
+<div class="wrap" id="app" style="display:none;">
+
+  <div class="topbar">
+    <div class="brand">GRIND<span>SET</span></div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <div class="badge live" id="statusBadge">IDLE</div>
+      <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙</button>
+    </div>
+  </div>
+
+  <!-- Normal (non-break) view: rep progress dial -->
+  <div class="dial-card" id="dialCard">
+    <div class="dial-wrap">
+      <svg viewBox="0 0 232 232">
+        <circle class="dial-track" cx="116" cy="116" r="100"></circle>
+        <circle class="dial-fill" id="dialFill" cx="116" cy="116" r="100"
+                stroke-dasharray="628" stroke-dashoffset="628"></circle>
+      </svg>
+      <div class="dial-center">
+        <div class="dial-reps"><span id="repsDone">0</span><small> / <span id="repsTotal">24</span></small></div>
+        <div class="dial-sub" id="repsSub">reps</div>
+      </div>
+    </div>
+    <div class="pips" id="pips"></div>
+    <div class="plan-line" id="planLine">24 reps &middot; 30 pushups each &middot; 45s rest</div>
+  </div>
+
+  <!-- Break view: big rest countdown, shown instead of the dial while resting -->
+  <div class="break-card" id="breakCard" style="display:none;">
+    <div class="break-label">REST</div>
+    <div class="break-countdown" id="breakCountdown">0:45</div>
+    <div class="break-ring-wrap">
+      <svg viewBox="0 0 232 12"><rect x="0" y="0" width="232" height="12" rx="6" fill="var(--line)"/></svg>
+      <div class="break-progress" id="breakProgress"></div>
+    </div>
+    <div class="break-sub">Next up: rep <span id="nextRepNum">2</span> / <span id="breakRepsTotal">24</span></div>
+    <button class="btn full" id="skipBreakBtn">Skip rest</button>
+  </div>
+
+  <div class="complete-banner" id="completeBanner">
+    <div class="title">WORKOUT COMPLETE 🔥</div>
+    <div class="sub" id="completeSub"></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Total time elapsed</div>
+      <div class="stat-value mono-big" id="elapsedVal">0:00</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Reps left</div>
+      <div class="stat-value" id="repsLeftVal">24</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Avg time / rep</div>
+      <div class="stat-value" id="paceVal">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Status</div>
+      <div class="stat-value" id="statusVal">Idle</div>
+    </div>
+  </div>
+
+  <div class="start-card" id="startHint">Tap start, do your set, then press "Log rep" when it's done.</div>
+
+  <button class="rep-btn" id="repBtn" disabled>START</button>
+
+  <div class="controls">
+    <button class="btn" id="pauseBtn">Pause</button>
+    <button class="btn danger-outline" id="resetBtn">Reset</button>
+  </div>
+
+  <div class="adjust-card">
+    <div class="adjust-title">
+      <span>Manual adjust (reps)</span>
+      <span id="avgTag" style="color:var(--text-dim); font-family:'JetBrains Mono',monospace;">—</span>
+    </div>
+    <div class="adjust-row" style="margin-bottom:8px;">
+      <div class="chip add" data-add="1">+1</div>
+      <div class="chip add" data-add="2">+2</div>
+      <div class="chip add" data-add="5">+5</div>
+      <div class="chip add" id="addCustom">+…</div>
+    </div>
+    <div class="adjust-row">
+      <div class="chip remove" data-remove="1">−1</div>
+      <div class="chip remove" data-remove="2">−2</div>
+      <div class="chip remove" data-remove="5">−5</div>
+      <div class="chip remove" id="removeCustom">−…</div>
+    </div>
+  </div>
+
+  <footer class="foot">SYNCED &middot; <span id="syncMode">local</span></footer>
+</div>
+
+<!-- Settings modal -->
+<div class="modal-overlay" id="settingsModal" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-title">Workout settings</div>
+    <label class="field">
+      <span>Number of reps (sets)</span>
+      <input type="number" id="cfgReps" min="1" max="200" value="24">
+    </label>
+    <label class="field">
+      <span>Pushups per rep</span>
+      <input type="number" id="cfgPushups" min="1" max="500" value="30">
+    </label>
+    <label class="field">
+      <span>Rest between reps (seconds)</span>
+      <input type="number" id="cfgBreak" min="0" max="600" value="45">
+    </label>
+    <div class="modal-note" id="modalNote"></div>
+    <div class="controls">
+      <button class="btn ghost" id="settingsCancel">Cancel</button>
+      <button class="btn full" id="settingsSave" style="border-color:var(--accent); color:var(--accent);">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/sync.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/me.js"></script>
+</body>
+</html>
